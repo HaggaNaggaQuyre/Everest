@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Everest</string>
+    <string name="gebenSieDenNamenEin">Geben sie den Namen ein</string>
+    <string name="hiereingeben">Hier Eingeben</string>
 </resources>
