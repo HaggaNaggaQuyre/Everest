@@ -1,28 +1,40 @@
 package com.example.everest;
 
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = "MainActivity";
-    EditText PenisText;
-    Button SchwanzButton;
+public class MainActivity extends SQLiteOpenHelper {
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+// ....
 
-        PenisText = (EditText) findViewById(R.layout.editText);
-        SchwanzButton = (Button) findViewById(R.layout.button);
-
-        SchwanzButton.setOnClickListener(this);
-
-
-
-
+    public MainActivity(Context context)  {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-}
+
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+        // Script to create table.
+        String script = "CREATE TABLE " + TABLE_NOTE + "("
+                + COLUMN_NOTE_ID + " INTEGER PRIMARY KEY," + COLUMN_NOTE_TITLE + " TEXT,"
+                + COLUMN_NOTE_CONTENT + " TEXT" + ")";
+        // Execute script.
+        db.execSQL(script);
+    }
+
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        // Drop table
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTE);
+
+
+        // Recreate
+        onCreate(db);
+    }
+// ...
+}}
