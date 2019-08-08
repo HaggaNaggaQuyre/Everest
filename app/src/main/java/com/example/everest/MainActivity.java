@@ -1,40 +1,52 @@
 package com.example.everest;
 
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import java.util.ArrayList;
 
-public class MainActivity extends SQLiteOpenHelper {
+public class MainActivity extends AppCompatActivity {
 
-// ....
-
-    public MainActivity(Context context)  {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        // Script to create table.
-        String script = "CREATE TABLE " + TABLE_NOTE + "("
-                + COLUMN_NOTE_ID + " INTEGER PRIMARY KEY," + COLUMN_NOTE_TITLE + " TEXT,"
-                + COLUMN_NOTE_CONTENT + " TEXT" + ")";
-        // Execute script.
-        db.execSQL(script);
-    }
-
+    private Button btnStore, btnGetall;
+    private EditText etname;
+    private DataBaseHelper databaseHelper;
+    private TextView tvnames;
+    private ArrayList<String> arrayList;
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
 
-        // Drop table
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTE);
+        databaseHelper = new DataBaseHelper(this);
+        tvnames = (TextView) findViewById(R.id.tvnames);
 
+        btnStore = (Button) findViewById(R.id.btnstore);
+        btnGetall = (Button) findViewById(R.id.btnget);
+        etname = (EditText) findViewById(R.id.etname);
 
-        // Recreate
-        onCreate(db);
+        btnStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseHelper.addStudentDetail(etname.getText().toString());
+                etname.setText("");
+                Toast.makeText(MainActivity.this, "Stored Successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnGetall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                arrayList = databaseHelper.getAllStudentsList();
+                tvnames.setText("");
+                for (int i = 0; i < arrayList.size(); i++){
+                    tvnames.setText(tvnames.getText().toString()+", "+arrayList.get(i));
+                }
+            }
+        });
     }
-// ...
-}}
+}
